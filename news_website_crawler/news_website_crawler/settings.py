@@ -1,3 +1,10 @@
+import random
+import os
+
+PROXY_LIST = []
+with open("validProxies.txt", "r") as f:
+    PROXY_LIST = [line.strip() for line in f.readlines()]
+
 # Scrapy settings for news_website_crawler project
 #
 # For simplicity, this file contains only settings considered important or
@@ -15,6 +22,7 @@ NEWSPIDER_MODULE = "news_website_crawler.spiders"
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "news_website_crawler (+http://www.yourdomain.com)"
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -50,10 +58,13 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#     'scrapy.downloadermiddelewares.httpproxy.HttpProxyMiddleware': 1,
-#    "news_website_crawler.middlewares.NewsWebsiteCrawlerDownloaderMiddleware": 543,
-# }
+DOWNLOADER_MIDDLEWARES = {
+   "news_website_crawler.middlewares.NewsWebsiteCrawlerDownloaderMiddleware": 543,
+    # 'scrapy.downloadermiddelewares.httpproxy.HttpProxyMiddleware': 1,
+    'scrapy.downloadermiddelewares.HttpProxyMiddleware': None,
+
+    # 'news_website_crawler.middlewares.ProxyMiddleware': 100,
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html

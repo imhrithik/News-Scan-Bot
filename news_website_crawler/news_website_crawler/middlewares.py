@@ -1,13 +1,17 @@
+from scrapy import signals
+import random
+from scrapy.downloadermiddlewares.httpproxy import HttpProxyMiddleware
+from scrapy import settings
+
 # Define here the models for your spider middleware
 #
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-from scrapy import signals
+# from scrapy import signals
 
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
-
 
 class NewsWebsiteCrawlerSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
@@ -69,6 +73,23 @@ class NewsWebsiteCrawlerDownloaderMiddleware:
         return s
 
     def process_request(self, request, spider):
+        with open("validProxies.txt", "r") as f:
+            proxy_list = [line.strip() for line in f.readlines()]
+        # print("Proxy List:", proxy_list)
+        proxy = random.choice(proxy_list)
+         # Set the proxy for the request
+        # scheme = request.url.split(':')[0]
+        # proxy_list = getattr(settings, 'PROXY_LIST', [])  # Access PROXY_LIST from settings
+        # proxy = random.choice(proxy_list)
+        scheme = "http"
+        request.meta['proxy'] = f"{scheme}://{proxy}"
+        return None
+
+        # proxy = random.choice(settings['PROXY_LIST'])  # Access PROXY_LIST from settings
+        # request.meta['proxy'] = f"{scheme}://{proxy}"
+        # return None
+        # proxy = random.choice(PROXY_LIST)
+        # request.meta['proxy'] = f"{scheme}://{proxy}"
         # Called for each request that goes through the downloader
         # middleware.
 
@@ -79,7 +100,7 @@ class NewsWebsiteCrawlerDownloaderMiddleware:
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
         # request.meta['proxy'] = "127.0.0.1"
-        return None
+        # return None
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.
