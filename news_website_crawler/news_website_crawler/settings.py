@@ -1,9 +1,15 @@
 import random
 import os
+from pathlib import Path
 
 PROXY_LIST = []
-with open("validProxies.txt", "r") as f:
-    PROXY_LIST = [line.strip() for line in f.readlines()]
+proxy_file = Path("validProxies.txt")
+if proxy_file.exists():
+    with open(proxy_file, "r") as f:
+        PROXY_LIST = [line.strip() for line in f.readlines() if line.strip()]
+else:
+    # Default proxy list if file doesn't exist
+    PROXY_LIST = []
 
 # Scrapy settings for news_website_crawler project
 #

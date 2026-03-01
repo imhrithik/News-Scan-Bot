@@ -18,11 +18,12 @@ def check_proxies():
             # To test ip addresses
             res = requests.get("http://ipinfo.io/json",
                                 proxies = { "http": proxy,
-                                            "http": proxy })
+                                            "https": proxy })
         except:
             continue
         if res.status_code == 200:
             print(proxy)
+            valid_proxies.append(proxy)
 
 
 for _ in range(10):

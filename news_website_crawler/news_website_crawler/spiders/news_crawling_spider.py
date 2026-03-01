@@ -1,7 +1,9 @@
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
+from scrapy.loader import ItemLoader
 import scrapy
 import random
+from news_website_crawler.items import NewsItem
 
 class NewsCrawlingSpider (CrawlSpider):
     name = "mycrawler"
@@ -65,18 +67,19 @@ class NewsCrawlingSpider (CrawlSpider):
         # Create an ItemLoader to structure the extracted data
         if response.status == 200:
             loader = ItemLoader(item=NewsItem(), response=response)
+            
+            # Extract relevant information using CSS selectors
+            # Note: Update these selectors based on actual HTML structure
+            loader.add_css('title', 'h1::text')
+            loader.add_css('content', 'p::text')
+            loader.add_value('source', response.url)
+            loader.add_css('date', '.date::text')
+            
+            yield loader.load_item()
         elif response.status == 403:
             self.logger.warning("Received a 403 Forbidden response for URL: %s", response.url)
         else:
             self.logger.warning("Received an unexpected response for URL %s with status code %d", response.url, response.status)
-
-        # Extract relevant information using CSS selectors
-        loader.add_css('title', 'your-css-selector-for-title')
-        loader.add_css('content', 'your-css-selector-for-content')
-        loader.add_css('source', 'your-css-selector-for-source')
-        loader.add_css('date', 'your-css-selector-for-date')
-
-        yield loader.load_item()
 
     # def parse_item (self, response):
     #     yield {
